@@ -19,7 +19,7 @@ public class Lot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
     @Enumerated(EnumType.STRING)
     private Status status;
     @Min(3)
@@ -33,12 +33,12 @@ public class Lot {
     @Min(1)
     private int bidPrice;
 
-    @OneToMany
-    @JoinColumn(name = "lot_id")
-    List<Bid> bids;
+    @OneToMany(mappedBy = "lot")
+   // @JoinColumn(name = "lot_id")
+    private List<Bid> bids;
 
 
-    public Lot(Integer id, int statusId, String title, String description, int startPrice, int bidPrice) {
+    public Lot(Long id, int statusId, String title, String description, int startPrice, int bidPrice) {
         this.id = id;
         this.status = getStatus(statusId);
         this.title = title;
@@ -58,4 +58,6 @@ public class Lot {
         }
         return status;
     }
+
+
 }

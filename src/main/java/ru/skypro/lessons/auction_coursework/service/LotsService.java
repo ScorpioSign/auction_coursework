@@ -1,31 +1,34 @@
 package ru.skypro.lessons.auction_coursework.service;
 
 
-
-import ru.skypro.lessons.auction_coursework.dto.FullLot;
-import ru.skypro.lessons.auction_coursework.model.Bid;
+import jakarta.servlet.http.HttpServletResponse;
 import ru.skypro.lessons.auction_coursework.model.Lot;
 import ru.skypro.lessons.auction_coursework.model.Status;
+import ru.skypro.lessons.auction_coursework.projections.FullLot;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface LotsService {
-    Bid getFirstBidder(int id);
 
-    String getFrequentBidder(int id);
+    FullLot getFullLotInfoByID(long id);
 
-    FullLot getEmployeeFullLotById(int id);
 
-    void startLot(int id);
+    void startLot(long id);
 
-    void makeBet(int id, String bidderName);
+    void makeBet(long id, String bidderName);
 
-    void stopLot(int id);
+    void stopLot(long id);
 
     Lot createLot(String title, String description, int startPrice, int bidPrice);
 
     List<Lot> getLotsByStatusAndPage(Status status, int page);
 
-    String exportLots() throws IOException;
+    //String exportLots() throws IOException;
+
+    void exportAllLots(HttpServletResponse response) throws IOException;
+
+   // int getCurrentPriceById(Lot lot);
+
+
 }

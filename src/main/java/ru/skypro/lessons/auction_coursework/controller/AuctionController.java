@@ -1,14 +1,21 @@
 package ru.skypro.lessons.auction_coursework.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skypro.lessons.auction_coursework.dto.FullLot;
-import ru.skypro.lessons.auction_coursework.model.Bid;
 import ru.skypro.lessons.auction_coursework.model.Lot;
 import ru.skypro.lessons.auction_coursework.model.Status;
+import ru.skypro.lessons.auction_coursework.projections.Bidder;
+import ru.skypro.lessons.auction_coursework.projections.FullLot;
+import ru.skypro.lessons.auction_coursework.service.BidService;
 import ru.skypro.lessons.auction_coursework.service.LotsService;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -18,25 +25,26 @@ public class AuctionController {
 
 
     private final LotsService lotsService;
+    private final BidService bidService;
+
 
     //    Получить информацию о первом ставившем на лот
     @GetMapping("/{id}/first")
-    public Bid getFirstBidder(@PathVariable int id) {
-        return lotsService.getFirstBidder(id);
+    public Bidder getFirstBidder(@PathVariable long id) {
+        return bidService.getFirstBidder(id);
     }
 
     //    Вернуть имя ставившего на данный лот наибольшее количество раз
     @GetMapping("/{id}/frequent")
-    public String getFrequentBidder(@PathVariable int id) {
-        return lotsService.getFrequentBidder(id);
+    public Bidder findMostFrequentBidder(@PathVariable long id) {
+        return bidService.getMostFrequentBidder(id);
     }
 
     //    Получить полную информацию о лоте
     @GetMapping("/{id}")
-    public FullLot getEmployeeFullLotById(@PathVariable int id) {
-        return lotsService.getEmployeeFullLotById(id);
+    public FullLot getFullLotInfoByID(@PathVariable long id) {
+        return lotsService.getFullLotInfoByID(id);
     }
-
 
     //    Начать торги по лоту
     @PostMapping("/{id}/start")
@@ -77,9 +85,21 @@ public class AuctionController {
     }
 
     //    Экспортировать все лоты в файл CSV
-    @GetMapping("/export")
-    public String exportLots() throws IOException {
-        return lotsService.exportLots();
+    @GetMapping(value = "/export", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<?> exportLots(HttpServletResponse response) throws IOException {
+        String fileName = "allLots.csv";
+        response.setContentType("text/csv");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setHeader("Content-Disposition", "attachment; filename=\"allLots.csv\"");
+
+        try {
+            lotsService.exportAllLots(response);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .body(response);
+        } catch (Throwable t) {
+            return new ResponseEntity<>("Лоты для загрузки отсутствуют.", HttpStatus.BAD_REQUEST);
+        }
     }
 
 

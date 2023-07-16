@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.skypro.lessons</groupId>
-    <artifactId>auction</artifactId>
+    <artifactId>auction_coursework</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>auction</name>
-    <description>auction</description>
+    <name>auction_coursework</name>
+    <description>auction_coursework</description>
     <properties>
         <java.version>17</java.version>
     </properties>

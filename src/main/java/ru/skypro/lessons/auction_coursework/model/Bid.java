@@ -17,13 +17,14 @@ public class Bid {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
     @Column(name = "bidder_name")
     private String bidderName;
     @Column(name = "bid_data")
     private LocalDateTime bidDate;
 
-
+    @ManyToOne
+    private Lot lot;
 
     public Bid(String bidderName) {
         this.bidderName = bidderName;
