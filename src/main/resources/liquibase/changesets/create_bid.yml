@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Nataly
+      changes:
+        - createTable:
+            tableName: bid
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: bid_data
+                  type: timestamp(6)
+              - column:
+                  name: bidder_name
+                  type: varchar(255)
+              - column:
+                  name: lot_id
+                  type: int
+                  constraints:
+                    foreignKeyName: lot_id
